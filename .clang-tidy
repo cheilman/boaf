@@ -1,0 +1,20 @@
+UseColor: true
+
+Checks: >
+  abseil-*,
+  bugprone-*,
+  cppcoreguidelines-*,
+  google-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+
+HeaderFilterRegex: "^.*(?!external).*"
+
+WarningsAsErrors: >
+  *,
+  -misc-unused-parameters,
+

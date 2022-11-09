@@ -1,0 +1,28 @@
+# Prefer C++17
+#build --cxxopt='-std=c++17' # This should work, but doesn't
+build --action_env=BAZEL_CXXOPTS="-std=c++17"
+
+# Try to mostly link statically
+build --dynamic_mode=off
+
+# Max parallel jobs
+build --jobs=100
+
+# Don't stop on the first error
+build --keep_going
+
+# Friendly output
+build --show_loading_progress
+build --show_progress
+
+#
+# Clang-tidy
+#
+
+# Required for bazel_clang_tidy to operate as expected
+build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+build:clang-tidy --output_groups=report
+
+# Optionally override the .clang-tidy config file target
+build:clang-tidy --@bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config
+
