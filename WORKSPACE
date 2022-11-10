@@ -116,3 +116,36 @@ http_archive(
     strip_prefix = "bazel_clang_tidy-41d3033cce4f6e42f7b683894e7b78ecf8491417",
     url = "https://github.com/dayfoo/bazel_clang_tidy/archive/41d3033cce4f6e42f7b683894e7b78ecf8491417.tar.gz",
 )
+
+#
+# Raylib
+#
+
+_RAYLIB_BUILD = """
+genrule(
+  name = "raylib_genrule",
+  srcs = glob(["**"]),
+  outs = ["libraylib.a", "raylib.h", "raymath.h", "rlgl.h"],
+  cmd = "( export raylibsrcroot=$$PWD/external/raylib && export rayliboutroot=$$PWD/$(RULEDIR) && echo raylibsrcroot=$$raylibsrcroot && echo rayliboutroot=$$rayliboutroot && echo outs=$(OUTS) && cd $$raylibsrcroot && cd src && make && cp libraylib.a raylib.h raymath.h rlgl.h $$rayliboutroot/ ) 2>&1 | tee /tmp/out.cah",
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "raylib",
+  # Note: This is dumb, since it tries to add library and headers to both srcs/hdrs
+  srcs = [":raylib_genrule"],
+  hdrs = [":raylib_genrule"],
+  visibility = ["//visibility:public"],
+  linkstatic=1,
+)
+"""
+
+http_archive(
+    name = "raylib",
+    build_file_content = _RAYLIB_BUILD,
+    sha256 = "61e395e724e0484ac683962a4bdd303164d650f9d0a7a9a03a02ebe31597009e",
+    strip_prefix = "raylib-bf2ad9df5fdcaa385b2a7f66fd85632eeebbadaa",
+    urls = [
+        "https://github.com/raysan5/raylib/archive/bf2ad9df5fdcaa385b2a7f66fd85632eeebbadaa.tar.gz",
+    ],
+)
